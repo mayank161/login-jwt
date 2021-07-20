@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>main content</title>
+</head>
+<body>
+    <div class="center">
+        <button class="btn" onclick="logout()">logout</button>
+    </div>
+    <div class="center">
+        <button class="btn" onclick="deleteAccount()">DELETE Account</button>
+    </div>
+    <h1> you are logged in </h1>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script>
+        async function logout() {
+            localStorage.removeItem('token');
+            window.location = 'index.html'
+        }
+
+        async function deleteAccount() {
+             const jwt = localStorage.getItem('token');
+            const data = await axios.get(`http://localhost:3000/deleteAccount`,{headers: {"Authorization": jwt}})
+          
+            console.log(data)
+            if(data.data.message == 'yes') {
+                localStorage.removeItem('token');
+                window.location = 'index.html'
+            }
+            else { alert('something went wrong'); }
+        }
+    </script>
+</body>
+</html>

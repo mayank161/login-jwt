@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>login</title>
+</head>
+<body>
+    <a class="btn" href="index.html">home</a>
+    <h1>Login Account</h1>
+    <div class="center">
+             <div class="type">
+                 <label for="Email">Email</label>
+                 <input type="email" name="email" value="">
+             </div>
+             <div class="type">
+                 <label for="password">password</label>
+                 <input type="password" name="password" value="">
+             </div>
+             <button class="btn" type="submit" onclick="login()">login</button>
+     </div>
+     <div class="center">
+         <a href="./forgetpassword.html">forgetPassword</a>
+     </div>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+     <script>
+         async function login() {
+             const input = document.getElementsByClassName('type');
+             const email = input[0].children[1].value;
+             const password = input[1].children[1].value;
+             if(!email || !password) { return alert('do not leave black input')}
+
+             const data = await axios.post('http://localhost:3000/login',{email:email, password:password})
+
+             const token = data.data.token
+             if(token == 'no') { return alert('please provide valid email or password') }
+             else { 
+                 localStorage.setItem('token',token)
+                 window.location = 'content.html'
+                }
+         }
+     </script>
+</body>
+</html>

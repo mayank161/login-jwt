@@ -25,32 +25,33 @@ exports.signup = async(req,res,next) => {
             return res.json({message:"401"});
         }
 
-        bcrypt.hash(password,12,async function(err, hash) {
-            const u = await new user({
-                name: name,
-                email: email,
-                password: hash,
-                resetToken: null
-            })
-            u.save();
+       
 
-            const msg = {
-                from:'satimayank94@gmail.com',
-                to: email,
-                subject: 'sending mail',
-                text: 'mail sent successfully',
-                html:`thanks ${name} for signup we will be in touch`
-            }
+        const msg = {
+            from:'satimayank94@gmail.com',
+            to: email,
+            subject: 'sending mail',
+            text: 'mail sent successfully',
+            html:`thanks ${name} for signup we will be in touch`
+        }
             
-            const z = await transport.sendMail(msg,async function(err,data) {
-                if(err) { 
-                    return res.json({messagae:'no'})
-                 }
+        const z = await transport.sendMail(msg,async function(err,data) {
+            if(err) { 
+                return res.json({message:'no'})
+            }
+            bcrypt.hash(password,12,async function(err, hash) {
+                const u = await new user({
+                    name: name,
+                    email: email,
+                    password: hash,
+                    resetToken: null
+                })
+                u.save();
 
+                const token = await jwt.sign({id: u.id, email: email},process.env.ACCESS_TOKEN_SECRET);
+                console.log(req.body.email,req.body.password);
+                res.json({token:token})
             })
-            const token = await jwt.sign({id: u.id, email: email},process.env.ACCESS_TOKEN_SECRET);
-            console.log(req.body.email,req.body.password);
-            res.json({token:token})
         })       
     } catch (error) {
         console.log(error);
@@ -59,7 +60,7 @@ exports.signup = async(req,res,next) => {
 }
 
 // login automatically when jwt token present
-exports.login = async (req,res,next) => {
+exports.jwt = async (req,res,next) => {
     try {
         const token = await req.header("Authorization");
         const u = await jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
@@ -152,5 +153,46 @@ exports.newPass = async(req,res,next) => {
         })
     } catch (error) {
         return res.status(403).json({ error})
+    }
+}
+
+
+exports.logout = async(req,res,next) => {
+    try {
+        const token = await req.header("Authorization");
+        console.log('hiiiiiiiiiiiiiiii',token);
+        const u = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET);
+        console.log(u.id);
+        user.deleteOne({_id:u.id}).then(() => {
+            console.log('user deleted')
+            return res.json({message: 'yes'})
+        })
+        .catch(err => {throw new Error(err); })
+    } catch (error) {
+        console.log(error);
+        res.status(401)
+    }
+    
+}
+
+
+exports.login = async (req,res,next) => {
+    try {
+        const email = req.body.email
+        const password = req.body.password
+    
+        const u = await user.findOne({email:email})
+        if(!u) { return res.json({token: 'no'})}
+    
+        bcrypt.compare(password,u.password, async (err,hash) => {
+            if(err) { throw new Error(err); }
+            if(hash) {
+                const token = await jwt.sign({id: u.id, email: email},process.env.ACCESS_TOKEN_SECRET);
+                res.json({token:token})
+            }
+            else { res.json({token:'no'})}
+        })
+    } catch (error) {
+        console.log(error);
     }
 }

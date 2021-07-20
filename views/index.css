@@ -1,4 +1,7 @@
-body {background-color: blueviolet;}
+body {
+    background-color: blueviolet;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
 h1 {
     text-align: center;
     color: beige;
@@ -9,7 +12,7 @@ h1 {
     flex-direction: column;
     border: 2px solid black;
     border-radius: 5%;
-    margin: 10% 30%;
+    margin: 5% 30%;
     background-color: coral;
 }
 .center div {
