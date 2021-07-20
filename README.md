@@ -13,8 +13,7 @@
 6.if provide corect then nodemailer accept
 <img src="img/3.PNG">
 
-# note when you open page again you will note see the login page because you are already logged in using jwt so i am just clearing the local storage so can loggin again for demo.
-
+# note when you open page again you will note see the option page because you are already logged in using jwt.
 7.if again provide same email then database model findOne email
 <img src="img/4.PNG">
 
