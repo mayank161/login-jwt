@@ -1,3 +1,8 @@
+# link of the website
+https://login-mayank-161.herokuapp.com/
+
+you have to download/clone the file and then use npm i nad then npm start to run the backend of this application in your local host
+
 # images to demonstrate the product
 1. first you have to install all the dependecy in node_modules by using npm i
 2. and after that do (npm start) to run the server
