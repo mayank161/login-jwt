@@ -2,6 +2,8 @@ const  controller = require('./controller')
 const path = require('path');
 const staticPath = path.join(__dirname,"./views")
 
+const port = process.env.PORT || 3000;
+
 const express = require('express');
 const app = express();
 app.use(express.static(staticPath));
@@ -27,4 +29,4 @@ app.get('/updatepassword/:token',controller.newPass)
 app.post('/login',controller.login);
 
 app.get('/deleteAccount',controller.logout)
-app.listen(3000);
+app.listen(port);
