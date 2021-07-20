@@ -10,7 +10,8 @@
 5.if providing invalid email that is not exist then nodemailer gives invalid
 <img src="img/2.PNG">
 
-6.if provide corect then nodemailer accept
+6.if provide corect then nodemailer accept 
+#now you can logout or delete account
 <img src="img/3.PNG">
 
 # note when you open page again you will note see the option page because you are already logged in using jwt.
