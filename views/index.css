@@ -1,0 +1,25 @@
+body {background-color: blueviolet;}
+h1 {
+    text-align: center;
+    color: beige;
+}
+.center {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border: 2px solid black;
+    border-radius: 5%;
+    margin: 10% 30%;
+    background-color: coral;
+}
+.center div {
+    margin: 3%;
+    background-color: aqua;
+    padding: 1%;
+}
+
+.btn{
+    margin: 2%;
+    padding: 2% 3%;
+    background-color: aqua;
+}

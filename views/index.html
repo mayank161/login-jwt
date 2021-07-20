@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>sign up</title>
+</head>
+<body>
+    <h1>signUp account</h1>
+    <div class="center">
+             <div class="type">
+                 <label for="name">Name</label>
+                 <input type="text" name="name" value="">
+             </div>
+             <div class="type">
+                 <label for="Email">Email</label>
+                 <input type="email" name="email" value="">
+             </div>
+             <div class="type">
+                 <label for="password">password</label>
+                 <input type="password" name="password" value="">
+             </div>
+             <button class="btn" type="submit" onclick="signUp()">signUp</button>
+     </div>
+     <div class="center">
+         <a href="./forgetpassword.html">forgetPassword</a>
+     </div>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+     <script>
+         const jwt = localStorage.getItem('token')
+         if(jwt) {
+            axios.get(`http://localhost:3000/jwt`,{headers: {"Authorization": jwt}})
+            .then(data => {
+                if(data.data.message === 'ok') {
+                    document.body.innerHTML = '<h1> you are logged in </h1>'
+                }
+            })
+         }
+         async function signUp() {
+            const user = document.getElementsByClassName('type');
+            console.log(user[2].children[1].value,user.length);
+            const name = user[0].children[1].value;
+            const email = user[1].children[1].value;
+            const password =  await user[2].children[1].value;
+            console.log(password);
+            const data = await axios.post('http://localhost:3000/signup',
+            {
+                name: name,
+                email: email,
+                password: password
+            });
+            console.log(data)
+            if(data.data.message == 'no') { return alert('please provide valid email id')}
+            if(data.data.message == 401) { return alert("user already exist")}
+            localStorage.setItem("token",data.data.token)
+            document.body.innerHTML = '<h1> you are logged in </h1>'
+        }
+     </script>
+</body>
+</html>
