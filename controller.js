@@ -84,7 +84,7 @@ exports.forget =(req,res,next) => {
                const token = buffer.toString('hex');
             
                user.findOneAndUpdate({email:email},{resetToken: token},{userFindAndModify: false}, (err,data) => {
-                   if(err) { return res.json({message:'not'}); }
+                   if(err || !data) { return res.json({message:'not'}); }
                    else { 
                        console.log('hiiiiiiiiiiii',data);
                        const msg = {
