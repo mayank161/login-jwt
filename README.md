@@ -4,6 +4,7 @@
 # 3. dependency contains bcrypt, cors, dotenv, express, jsonwebtoken, nodemailer, pg, pg-hstore, sequelize
 
 4.front page look like
+<img src="img/0.1.PNG">
 <img src="img/1.PNG">
 
 5.if providing invalid email that is not exist then nodemailer gives invalid
