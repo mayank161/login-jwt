@@ -25,39 +25,62 @@ exports.signup = async(req,res,next) => {
             return res.json({message:"401"});
         }
 
-       
+        const str = ''+name +','+email+','+password;
 
         const msg = {
             from:'satimayank94@gmail.com',
             to: email,
             subject: 'sending mail',
             text: 'mail sent successfully',
-            html:`thanks ${name} for signup we will be in touch`
+            html:`<body style="background-color: blueviolet; color: white;">
+            <div style=" margin: 2%;">
+            thanks ${name} for signup please click the button below to verify your account
+            </div>
+            <div style=" margin: 2%;">
+            <a href="http://localhost:3000/verify/${str}" style="padding: 10px 20px; background-color: coral; border: 2px solid black;"> click </a>
+            </div>
+            </body>`
         }
             
         const z = await transport.sendMail(msg,async function(err,data) {
             if(err) { 
                 return res.json({message:'no'})
             }
-            bcrypt.hash(password,12,async function(err, hash) {
-                const u = await new user({
-                    name: name,
-                    email: email,
-                    password: hash,
-                    resetToken: null
-                })
-                u.save();
-
-                const token = await jwt.sign({id: u.id, email: email},process.env.ACCESS_TOKEN_SECRET);
-                console.log(req.body.email,req.body.password);
-                res.json({token:token})
-            })
+            res.json({message: 'yes'});
         })       
     } catch (error) {
         console.log(error);
         res.status(401);
     }
 }
+
+
+
+exports.verified = (req,res,next) => {
+    try {
+        const str = req.params.entry;
+        const arr = str.split(',');
+        
+        bcrypt.hash(arr[2],12,async function(err, hash) {
+            const u = await new user({
+                name: arr[0],
+                email: arr[1],
+                password: hash,
+                resetToken: null
+            })
+            u.save();
+            
+            res.redirect('/');
+            // const token = await jwt.sign({id: u.id, email: email},process.env.ACCESS_TOKEN_SECRET);
+            // console.log(req.body.email,req.body.password);
+            // res.json({token:token})
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(401);
+    }
+}
+
 
 // login automatically when jwt token present
 exports.jwt = async (req,res,next) => {
@@ -86,7 +109,6 @@ exports.forget =(req,res,next) => {
                user.findOneAndUpdate({email:email},{resetToken: token},{userFindAndModify: false}, (err,data) => {
                    if(err || !data) { return res.json({message:'not'}); }
                    else { 
-                       console.log('hiiiiiiiiiiii',data);
                        const msg = {
                         from:'satimayank94@gmail.com',
                         to: email,
@@ -113,17 +135,16 @@ exports.resetPass = (req,res,next) => {
     const token = req.params.token;
     console.log(token);
     res.status(200).send(`<html>
-    <script>
-        function formsubmitted(e){
-            e.preventDefault();
-            console.log('called')
-        }
-    </script>
+    <body>
+    <a  href="http://localhost:3000"  style="padding: 10px 20px; background-color: coral; border: 2px solid black;">home</a>
+    <div style= "margin: 3%;">
     <form action="/updatepassword/${token}" method="get">
         <label for="newpassword">Enter New password</label>
         <input name="newpassword" type="password" required></input>
         <button>reset password</button>
     </form>
+    </div>
+    </body>
 </html>`
 )
 res.end();
@@ -146,7 +167,9 @@ exports.newPass = async(req,res,next) => {
             user.findOneAndUpdate({resetToken:token},{password: hash,resetToken: null},{userFindAndModify: false}, (err,data) => {
                 if(err) { throw new Error(err) }
                 else {
-                   return res.status(200).send('<h1>password reset successfully</h1>')
+                   return res.status(200).send(`
+                   <a  href="http://localhost:3000"  style="padding: 10px 20px; background-color: coral; border: 2px solid black;">home</a>
+                   <h1>password reset successfully</h1>`)
                 }
             })
 

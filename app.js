@@ -27,6 +27,8 @@ app.post('/forgetPass',controller.forget)
 app.get('/reset/:token',controller.resetPass)
 app.get('/updatepassword/:token',controller.newPass)
 app.post('/login',controller.login);
+app.get('/verify/:entry',controller.verified);
 
 app.get('/deleteAccount',controller.logout)
+app.get('/test', (req,res) => { res.json({hello:'hello world'})})
 app.listen(port);

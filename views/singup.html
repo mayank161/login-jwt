@@ -45,9 +45,10 @@
             console.log(data)
             if(data.data.message == 'no') { return alert('please provide valid email id')}
             if(data.data.message == 401) { return alert("user already exist")}
-            localStorage.setItem("token",data.data.token)
+            else { document.getElementsByClassName('center')[0].innerHTML = '<h1> please check your email id to verify your account </h1>' }
+            // localStorage.setItem("token",data.data.token)
             
-            window.location = 'content.html'
+            // window.location = 'content.html'
         }
 
      </script>
