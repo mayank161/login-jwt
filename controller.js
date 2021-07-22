@@ -132,22 +132,36 @@ exports.forget =(req,res,next) => {
 
 // link passed by mail
 exports.resetPass = (req,res,next) => {
-    const token = req.params.token;
-    console.log(token);
-    res.status(200).send(`<html>
-    <body>
-    <a  href="http://localhost:3000"  style="padding: 10px 20px; background-color: coral; border: 2px solid black;">home</a>
-    <div style= "margin: 3%;">
-    <form action="/updatepassword/${token}" method="get">
-        <label for="newpassword">Enter New password</label>
-        <input name="newpassword" type="password" required></input>
-        <button>reset password</button>
-    </form>
-    </div>
-    </body>
-</html>`
-)
-res.end();
+    try {
+        const token = req.params.token;
+        console.log(token);
+        user.findOne({resetToken:token}).then(val => {
+            if(!val) { return res.send(`<body>
+                <a  href="http://localhost:3000"  style="padding: 10px 20px; background-color: coral; border: 2px solid black;">home</a>
+                <div style= "margin: 3%;"> 
+                <h1> token expires </h1>
+                </div>
+                `)}
+            else {
+                res.status(200).send(`<html>
+                <body>
+                <a  href="http://localhost:3000"  style="padding: 10px 20px; background-color: coral; border: 2px solid black;">home</a>
+                <div style= "margin: 3%;">
+                <form action="/updatepassword/${token}" method="get">
+                    <label for="newpassword">Enter New password</label>
+                    <input name="newpassword" type="password" required></input>
+                    <button>reset password</button>
+                </form>
+                </div>
+                </body>
+            </html>`
+            )}
+            res.end();
+        }).catch (err => {throw new Error(err)})
+    } catch (error) {
+        console.log(error)
+        res.status(401);
+    }
 }
 
 
